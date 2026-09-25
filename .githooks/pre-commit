@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+# Git clients may supply a locale that is not installed on this machine.
+export LC_ALL=C.UTF-8
+cd "$(git rev-parse --show-toplevel)"
+python_bin=$(git config --get mbqc.python || true)
+if [ -n "$python_bin" ]; then
+  exec "$python_bin" website/pre_commit.py
+fi
+if [ -x .venv/bin/python ]; then
+  exec .venv/bin/python website/pre_commit.py
+fi
+exec python3 website/pre_commit.py

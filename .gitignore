@@ -1,0 +1,7 @@
+**/.ipynb_checkpoints/
+*Zone.Identifier
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/

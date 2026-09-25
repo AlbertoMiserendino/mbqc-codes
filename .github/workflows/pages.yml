@@ -1,0 +1,64 @@
+name: Publish website
+on:
+  push:
+    branches: [main]
+    paths:
+      - README.md
+      - website/**
+      - 01-mbqc-teleport/**
+      - 02-mbqc-rotation/**
+      - 03-mbqc-cnot/**
+      - requirements*.txt
+      - .python-version
+      - .nojekyll
+      - .github/workflows/pages.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Publish committed exports; set to 'true' to restore CI regeneration.
+      REGENERATE_NOTEBOOK_EXPORTS: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        if: env.REGENERATE_NOTEBOOK_EXPORTS == 'true'
+        with:
+          python-version-file: .python-version
+          cache: pip
+      - name: Install website tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+      - name: Install export tools
+        if: env.REGENERATE_NOTEBOOK_EXPORTS == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-plain-generic
+          python -m pip install -r requirements.txt -r requirements-dev.txt
+      - name: Regenerate notebook HTML and PDF
+        if: env.REGENERATE_NOTEBOOK_EXPORTS == 'true'
+        shell: bash
+        run: bash website/export-notebooks.sh
+      - run: python3 website/build.py --stage
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

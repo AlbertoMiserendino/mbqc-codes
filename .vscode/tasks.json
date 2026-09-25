@@ -1,0 +1,77 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Jupyter: Export current notebook to HTML",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/jupyter",
+      "args": [
+        "nbconvert",
+        "--to",
+        "html",
+        "${fileBasename}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Jupyter: Export current notebook to PDF",
+      "type": "shell",
+      "command": "${workspaceFolder}/.venv/bin/jupyter",
+      "args": [
+        "nbconvert",
+        "--to",
+        "pdf",
+        "--template-file",
+        "${workspaceFolder}/website/no-date.tex.j2",
+        "${fileBasename}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Jupyter: Export ALL notebooks to HTML",
+      "type": "shell",
+      "command": "find \"${workspaceFolder}\" -name '*.ipynb' -not -path '*/.ipynb_checkpoints/*' -exec sh -c '\"${workspaceFolder}/.venv/bin/jupyter\" nbconvert --to html --output-dir \"$(dirname \"$1\")\" \"$1\"' _ {} \\;",
+      "problemMatcher": []
+    },
+    {
+      "label": "Jupyter: Export ALL notebooks to PDF",
+      "type": "shell",
+      "command": "find \"${workspaceFolder}\" -name '*.ipynb' -not -path '*/.ipynb_checkpoints/*' -exec sh -c '\"${workspaceFolder}/.venv/bin/jupyter\" nbconvert --to pdf --template-file \"${workspaceFolder}/website/no-date.tex.j2\" --output-dir \"$(dirname \"$1\")\" \"$1\"' _ {} \\;",
+      "problemMatcher": []
+    },
+    {
+      "label": "Tests: Run all notebooks",
+      "type": "process",
+      "command": "${workspaceFolder}/.venv/bin/python",
+      "args": [
+        "-m",
+        "pytest",
+        "-c",
+        "tests/pytest.ini"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Website: Build index from README",
+      "type": "process",
+      "command": "python3",
+      "args": [
+        "website/build.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

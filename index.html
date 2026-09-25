@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+    content="Explore measurement-based quantum computing through bilingual notebooks on teleportation, single-qubit rotation and the CNOT gate.">
+  <title>Measurement-based quantum computing</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --cyan: #64cddd;
+      --aqua: #a5dad4;
+      --cream: #e1e4cb;
+      --orange: #fa882e;
+      --bright-orange: #ff6900;
+      --bg: #fffefa;
+      --panel: #ffffff;
+      --ink: #203b3d;
+      --muted: #486163;
+      --line: #e0eae6;
+      --accent: #216571;
+      --heading-bg: #f5f6ec;
+      --nav-bg: #eef9f6;
+      --hover: #974000;
+    }
+
+    body::before {
+      content: "";
+      display: block;
+      height: 6px;
+      background: linear-gradient(to right, var(--cyan) 0% 20%, var(--aqua) 20% 40%, var(--cream) 40% 60%, var(--orange) 60% 80%, var(--bright-orange) 80% 100%);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 1rem/1.65 system-ui, sans-serif;
+    }
+
+    main {
+      max-width: 1080px;
+      margin: auto;
+      padding: 72px 24px 40px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .repository-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .repository-link:hover {
+      background: var(--nav-bg);
+    }
+
+    .repository-link svg {
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 850px;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      line-height: 1.12;
+      letter-spacing: -.04em;
+      margin: 16px 0 24px;
+    }
+
+    .intro {
+      max-width: 740px;
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin: 40px 0;
+    }
+
+    article {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .number {
+      color: var(--accent);
+      font: 700 .9rem/1.5 ui-monospace, monospace;
+    }
+
+    h2 {
+      font-size: 1.35rem;
+      line-height: 1.3;
+      margin: 18px 0 8px;
+    }
+
+    article p {
+      color: var(--muted);
+      margin: 8px 0 24px;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    a {
+      color: var(--accent);
+      text-underline-offset: 3px;
+    }
+
+    .links a {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .links a:hover {
+      background: var(--bg);
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: var(--hover);
+    }
+
+    pre {
+      border-left: 4px solid var(--cyan);
+    }
+
+    a:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding-top: 20px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    footer p {
+      max-width: 780px;
+    }
+
+    @media (max-width: 760px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        padding-top: 40px;
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    h2 {
+      margin-top: 48px;
+      padding-top: 12px;
+      border-top: 1px solid #f7d8bb;
+      font-size: 1.7rem;
+    }
+
+    h3 {
+      margin-top: 28px;
+      font-size: 1.2rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      scroll-margin-top: 24px;
+    }
+
+    p,
+    li {
+      max-width: 900px;
+    }
+
+    pre {
+      overflow-x: auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    code {
+      font-family: ui-monospace, monospace;
+      font-size: .9em;
+      overflow-wrap: anywhere;
+    }
+
+    pre code {
+      overflow-wrap: normal;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 20px 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      min-width: 140px;
+    }
+
+    th {
+      font-weight: 700;
+      background: var(--heading-bg);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    blockquote {
+      margin: 24px 0;
+      padding: 4px 24px;
+      border-left: 4px solid var(--bright-orange);
+      color: var(--muted);
+    }
+
+    .contents {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      margin: 24px 0 40px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--nav-bg);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 24px;
+      top: -100px;
+      background: var(--panel);
+      padding: 12px;
+    }
+
+    .skip-link:focus {
+      top: 12px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#code">Skip to the code</a>
+  <main id="main-content">
+    <header class="page-header">
+      <div class="eyebrow">Quantum computing · Notebook collection</div>
+      <a class="repository-link" href="https://github.com/AlbertoMiserendino/mbqc-codes"
+        aria-label="View MBQC Codes repository on GitHub">
+        <svg width="20" height="20" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+        </svg>
+        GitHub
+      </a>
+    </header>
+    <!-- Generated from README.md; edit the README or website/template.html. -->
+<h1 id="measurement-based-quantum-computing">Measurement-based quantum computing</h1>
+<p>Jupyter notebooks exploring measurement-based quantum computing (MBQC) with cluster states, OpenQASM 3, Qiskit and local Aer simulations. The examples use <a href="#dynamic-circuit-and-classical-feedforward">dynamic circuits</a> to implement quantum teleportation, an arbitrary single-qubit rotation and a CNOT gate on cluster states. The rotation example additionally uses <a href="#adaptive-measurements">adaptive measurements</a>, whose bases depend on earlier measurement outcomes.</p>
+<p>Browse the exported notebooks on the <a href="https://albertomiserendino.github.io/mbqc-codes/">MBQC Codes website</a>.</p>
+<nav class="contents" aria-label="On this page">
+<a href="#code">Code</a>
+<a href="#setup">Setup</a>
+<a href="#run-an-example">Run an example</a>
+<a href="#expected-results-and-validation">Expected results and validation</a>
+<a href="#references">References</a>
+<a href="#glossary">Glossary</a>
+</nav>
+<h2 id="code">Code</h2>
+<h3 id="notebooks">Notebooks</h3>
+<p>These notebooks simulate circuits locally with <code>AerSimulator</code>; they do not submit jobs to quantum hardware. The later Python calculations of tomography and fidelity analyze the collected results and are separate from the in-circuit feed-forward.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable reference table"><table>
+<thead>
+<tr>
+<th>Example</th>
+<th>English</th>
+<th>Italian</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quantum teleportation</td>
+<td><a href="01-mbqc-teleport/mbqc-teleport-en.ipynb">Notebook</a> · <a href="01-mbqc-teleport/mbqc-teleport-en.html">HTML</a> · <a href="01-mbqc-teleport/mbqc-teleport-en.pdf">PDF</a> · <a href="https://colab.research.google.com/github/AlbertoMiserendino/mbqc-codes/blob/main/01-mbqc-teleport/mbqc-teleport-en.ipynb">Colab</a> · <a href="01-mbqc-teleport/mbqc-teleport-v1a.qasm">OpenQASM</a> · <a href="01-mbqc-teleport/mbqc-teleport-v1b.qasm">OpenQASM (2)</a></td>
+<td><a href="01-mbqc-teleport/mbqc-teleport-it.ipynb">Notebook</a> · <a href="01-mbqc-teleport/mbqc-teleport-it.html">HTML</a> · <a href="01-mbqc-teleport/mbqc-teleport-it.pdf">PDF</a> · <a href="https://colab.research.google.com/github/AlbertoMiserendino/mbqc-codes/blob/main/01-mbqc-teleport/mbqc-teleport-it.ipynb">Colab</a></td>
+<td>Transfer an arbitrary input state through a four-qubit linear cluster, then apply Pauli corrections and a final Hadamard.</td>
+</tr>
+<tr>
+<td>Arbitrary rotation</td>
+<td><a href="02-mbqc-rotation/mbqc-rotation-en.ipynb">Notebook</a> · <a href="02-mbqc-rotation/mbqc-rotation-en.html">HTML</a> · <a href="02-mbqc-rotation/mbqc-rotation-en.pdf">PDF</a> · <a href="https://colab.research.google.com/github/AlbertoMiserendino/mbqc-codes/blob/main/02-mbqc-rotation/mbqc-rotation-en.ipynb">Colab</a> · <a href="02-mbqc-rotation/mbqc-rotation.qasm">OpenQASM</a></td>
+<td><a href="02-mbqc-rotation/mbqc-rotation-it.ipynb">Notebook</a> · <a href="02-mbqc-rotation/mbqc-rotation-it.html">HTML</a> · <a href="02-mbqc-rotation/mbqc-rotation-it.pdf">PDF</a> · <a href="https://colab.research.google.com/github/AlbertoMiserendino/mbqc-codes/blob/main/02-mbqc-rotation/mbqc-rotation-it.ipynb">Colab</a></td>
+<td>Implement <code>U_R = Rx(zeta) Rz(eta) Rx(xi)</code> on a five-qubit linear cluster using <a href="#adaptive-measurements">adaptive measurement bases</a>.</td>
+</tr>
+<tr>
+<td>CNOT gate</td>
+<td><a href="03-mbqc-cnot/mbqc-cnot-en.ipynb">Notebook</a> · <a href="03-mbqc-cnot/mbqc-cnot-en.html">HTML</a> · <a href="03-mbqc-cnot/mbqc-cnot-en.pdf">PDF</a> · <a href="https://colab.research.google.com/github/AlbertoMiserendino/mbqc-codes/blob/main/03-mbqc-cnot/mbqc-cnot-en.ipynb">Colab</a></td>
+<td><a href="03-mbqc-cnot/mbqc-cnot-it.ipynb">Notebook</a> · <a href="03-mbqc-cnot/mbqc-cnot-it.html">HTML</a> · <a href="03-mbqc-cnot/mbqc-cnot-it.pdf">PDF</a> · <a href="https://colab.research.google.com/github/AlbertoMiserendino/mbqc-codes/blob/main/03-mbqc-cnot/mbqc-cnot-it.ipynb">Colab</a></td>
+<td>Implement a <code>CNOT</code> gate on a four-qubit T-shaped cluster.</td>
+</tr>
+</tbody>
+</table></div>
+<p>The teleportation and rotation examples estimate the output Bloch vector from measurements in the X, Y and Z bases and compare it with a theoretical reference using fidelity. The default is 10,000 shots per basis, so numerical results vary between runs.</p>
+<p>The rotation notebook also includes an interactive Bloch sphere comparing the input state, expected output and reconstructed output, implemented by the <code>BlochComparison</code> class.</p>
+<h3 id="openqasm-files">OpenQASM files</h3>
+<blockquote>
+<p>OpenQASM (Open Quantum Assembly Language) is an imperative programming language designed for near-term quantum computing algorithms and applications. Quantum programs are described using the measurement-based quantum circuit model with support for classical feed-forward flow control based on measurement outcomes [<a href="https://openqasm.com/">openqasm.com</a>].</p>
+</blockquote>
+<ul>
+<li><a href="01-mbqc-teleport/mbqc-teleport-v1a.qasm">mbqc-teleport-v1a.qasm</a>: prepares the ancillary cluster before preparing and coupling the input state.</li>
+<li><a href="01-mbqc-teleport/mbqc-teleport-v1b.qasm">mbqc-teleport-v1b.qasm</a>: prepares the input state first, then prepares the ancillas and creates the cluster connections. The teleportation notebook displays both variants and uses this second circuit for the subsequent simulation.</li>
+<li><a href="02-mbqc-rotation/mbqc-rotation.qasm">mbqc-rotation.qasm</a>: prepares the five-qubit cluster, performs <a href="#adaptive-measurements">adaptive measurements</a> and removes the Pauli byproduct from the output qubit.</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>The reference environment is <strong>Python 3.14.4</strong> (also recorded in <code>.python-version</code>). Use this version to reproduce the validated setup. Other Python versions have not been verified.</p>
+<p>Create a Python virtual environment from the repository root. On Linux or WSL:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3.14</span> <span class="at">-m</span> venv .venv</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements-dev.txt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> ipykernel install <span class="at">--user</span> <span class="at">--name</span> mbqc <span class="at">--display-name</span> <span class="st">&quot;Python (MBQC)&quot;</span></span></code></pre></div>
+<ul>
+<li><a href="requirements.txt">requirements.txt</a> specifies Qiskit, the OpenQASM 3 importer, Aer, <code>ipynbname</code> and <code>ipympl</code>.</li>
+<li><a href="requirements-dev.txt">requirements-dev.txt</a> pins the Jupyter tools used to run and export notebooks. Simulations run locally and do not require quantum hardware credentials.</li>
+</ul>
+<h2 id="run-an-example">Run an example</h2>
+<h3 id="run-online-with-google-colab">Run online with Google Colab</h3>
+<p>Use the <strong>Colab</strong> links in the table above to open either language version. Connect to a Python runtime and run the cells in order. The setup cell clones this repository's <code>main</code> branch into <code>/content/mbqc-codes</code>, selects the example directory and installs <code>requirements.txt</code>. If prompted after installation, restart the runtime and run the cells again. The rotation notebooks also enable Colab's custom widget manager for the interactive Bloch sphere, following the <a href="https://matplotlib.org/ipympl/installing.html#google-colab">ipympl instructions</a>.</p>
+<p>The clone is reused within a session; start a fresh Colab session to fetch later GitHub changes. Colab links use the published files on <code>main</code>, so local edits become available after committing and pushing them. Colab's Python environment may differ from the locally validated version; execution in a hosted Colab runtime has not yet been verified.</p>
+<h3 id="run-locally">Run locally</h3>
+<p>Launch JupyterLab from the example directory so that the initial dependency cell can resolve <code>../requirements.txt</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> 01-mbqc-teleport</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> jupyterlab</span></code></pre></div>
+<p>To use the Jupyter Notebook interface instead, run <code>python -m notebook</code> from the same directory.</p>
+<p>For the rotation or CNOT example, use <code>02-mbqc-rotation</code> or <code>03-mbqc-cnot</code> instead. Open either language version, select <strong>Python (MBQC)</strong> and execute the cells in order. The teleportation and rotation notebooks load QASM files from their own directory; CNOT constructs its circuit in Python.</p>
+<p>Alternatively, open a notebook in VS Code with the Python and Jupyter extensions and select the virtual environment as its kernel. If the dependency cell cannot find <code>../requirements.txt</code>, install dependencies from the repository root using the setup command above and continue with the directory setup cell.</p>
+<p>After installing dependencies for the first time, restart the kernel before running all cells. This is especially important for <code>ipympl</code>: an already running kernel may not recognize the <code>widget</code> backend until restarted.</p>
+<h3 id="interactive-bloch-sphere">Interactive Bloch sphere</h3>
+<p>Execute the rotation notebook through its final plotting cell. It uses <code>%matplotlib widget</code>: drag the sphere to rotate it and use the toolbar to zoom. A static notebook preview does not provide these controls; open the notebook with a running kernel.</p>
+<h2 id="expected-results-and-validation">Expected results and validation</h2>
+<p>Run the notebook tests with <code>python -m pytest -c tests/pytest.ini</code> after installing the development requirements. Test code and configuration live in <a href="https://github.com/AlbertoMiserendino/mbqc-codes/tree/main/tests"><code>tests/</code></a>.</p>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable reference table"><table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Default sampling</th>
+<th>Expected result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Teleportation</td>
+<td>10,000 shots in each of X, Y and Z</td>
+<td>Recover the input Bloch vector; for the default angles, approximately <code>(0.7071, 0.7071, 0)</code>, with fidelity close to 1.</td>
+</tr>
+<tr>
+<td>Arbitrary rotation</td>
+<td>10,000 shots in each of X, Y and Z</td>
+<td>Match the independent gate-model reference for <code>Rx(zeta) Rz(eta) Rx(xi)</code>, with fidelity close to 1.</td>
+</tr>
+<tr>
+<td>CNOT</td>
+<td>20,000 shots for each of nine joint Pauli settings</td>
+<td>Match the two-qubit CNOT reference; fidelity and purity close to 1, trace distance close to 0.</td>
+</tr>
+</tbody>
+</table></div>
+<p>In a local validation run on Python 3.14.4, each notebook took approximately 3–7 seconds, including kernel startup and plots but excluding installation and export. Timings depend on hardware. Finite-shot results fluctuate. See <a href="https://github.com/AlbertoMiserendino/mbqc-codes/blob/main/docs/validation.md#shot-counts-and-statistical-precision">shot counts and statistical precision</a> for why CNOT uses more shots and <a href="https://github.com/AlbertoMiserendino/mbqc-codes/blob/main/docs/validation.md">validation instructions</a> for the automated checks, tolerances and execution-time report.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>R. Raussendorf and H. J. Briegel, <em>A One-Way Quantum Computer</em>, Physical Review Letters <strong>86</strong>, 5188–5191 (2001). <a href="https://doi.org/10.1103/PhysRevLett.86.5188">DOI</a></li>
+<li>R. Raussendorf, D. E. Browne and H. J. Briegel, <em>Measurement-based quantum computation on cluster states</em>, Physical Review A <strong>68</strong>, 022312 (2003). <a href="https://doi.org/10.1103/PhysRevA.68.022312">DOI</a></li>
+</ul>
+<h2 id="glossary">Glossary</h2>
+<h3 id="dynamic-circuit-and-classical-feedforward">Dynamic circuit and classical feedforward</h3>
+<blockquote>
+<p>A quantum circuit is a sequence of quantum operations — including <em>gates</em>, <em>measurements</em> and <em>resets</em> — acting on qubits.</p>
+<p>In static circuits, none of those operations depend on data produced at run time. For example, static circuits might only contain measurement operations at the end of the circuit.</p>
+<p><strong>Dynamic circuits</strong>, on the other hand, incorporate classical processing within the coherence time of the qubits. This means that dynamic circuits can make use of <em>mid-circuit measurements</em> and perform <em>(classical logic) feed-forward operations</em>, based on the outcome of those measurements to determine what gates to apply next. This process is also known as <em>classical feedforward</em>. [<a href="https://www.ibm.com/quantum/blog/quantum-dynamic-circuits">IBM Quantum blog</a>][<a href="https://quantum.cloud.ibm.com/docs/en/guides/execute-dynamic-circuits#execute-dynamic-circuits">IBM Quantum docs</a>]</p>
+</blockquote>
+<blockquote>
+<p>In these examples, outcome-dependent Pauli corrections are used.</p>
+</blockquote>
+<h4 id="adaptive-measurements">Adaptive measurements</h4>
+<p><strong>Adaptive measurements</strong> are measurements whose bases are chosen using earlier measurement outcomes within the same shot.</p>
+<blockquote>
+<p>In the rotation example, a previously measured bit selects the sign of a rotation applied before the next measurement, thereby changing its effective measurement basis.</p>
+</blockquote>
+<p>This is one use of <a href="#dynamic-circuit-and-classical-feedforward">classical feed-forward</a>: feed-forward supplies and processes the classical outcome, while the adaptive measurement is the quantum operation whose basis is selected.</p>
+
+  </main>
+</body>
+</html>

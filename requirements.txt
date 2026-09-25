@@ -1,0 +1,5 @@
+qiskit[visualization]==2.5.2
+qiskit_qasm3_import==0.6.0
+qiskit_aer==0.17.2
+ipynbname==2025.8.0.0
+ipympl==0.9.8
