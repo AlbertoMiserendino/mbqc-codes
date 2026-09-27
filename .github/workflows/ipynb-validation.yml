@@ -1,0 +1,46 @@
+name: Validate notebooks
+on:
+  push:
+    paths:
+      - '**/*.ipynb'
+      - requirements*.txt
+      - pyproject.toml
+      - uv.lock
+      - .python-version
+      - tests/**
+      - .github/workflows/ipynb-validation.yml
+  pull_request:
+    paths:
+      - '**/*.ipynb'
+      - requirements*.txt
+      - pyproject.toml
+      - uv.lock
+      - .python-version
+      - tests/**
+      - .github/workflows/ipynb-validation.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  notebooks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: "0.12.0"
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Verify exported requirements
+        run: |
+          uv export --locked --no-dev --no-hashes --no-emit-project -o requirements.txt
+          uv export --locked --only-dev --no-hashes --no-emit-project -o requirements-dev.txt
+          git diff --exit-code -- requirements.txt requirements-dev.txt
+      - run: uv pip check
+      - run: uv run --locked python -m pytest -c tests/pytest.ini --junitxml=build/validation/junit.xml
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: notebook-validation
+          path: build/validation/

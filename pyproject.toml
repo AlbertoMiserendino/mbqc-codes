@@ -1,0 +1,28 @@
+[project]
+name = "mbqc-codes"
+version = "0.1.0"
+description = "Measurement-based quantum computing notebooks"
+requires-python = ">=3.11,<3.15"
+dependencies = [
+    "qiskit[visualization]==2.5.2",
+    "qiskit_qasm3_import==0.6.0",
+    "qiskit_aer==0.17.2",
+    "ipynbname==2025.8.0.0",
+    "ipympl==0.9.8",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel==7.3.0",
+    "pyzmq==27.2.0",
+    "jupyter-client==8.10.0",
+    "notebook==7.6.3",
+    "jupyterlab==4.6.4",
+    "nbconvert==7.17.1",
+    "nbclient==0.11.0",
+    "pytest==9.1.1",
+    "pip", # Required by the notebooks’ %pip setup cells.
+]
+
+[tool.uv]
+package = false
